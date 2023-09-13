@@ -1,10 +1,22 @@
 package controllers
 
-import "github.com/gin-gonic/gin"
+import (
+	"ssk/models"
+	"ssk/services"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+)
 
 func Get(c *gin.Context) {
+	path := c.Request.URL.Path
+	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
+	model := []models.BaseModel{}
+
+	services.GetPage(c, pathSlice[1], &model, "*", "")
 	c.JSON(200, gin.H{
 		"message": "Get",
+		"data":    model,
 	})
 }
 
