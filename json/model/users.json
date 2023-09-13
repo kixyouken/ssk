@@ -1,0 +1,11 @@
+{
+    "name": "用户",
+    "table": {
+        "name": "users"
+    },
+    "columns": [
+        { "label": "ID", "name": "id" },
+        { "label": "姓名", "name": "name" },
+        { "label": "邮箱", "name": "email" }
+    ]
+}

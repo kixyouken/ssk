@@ -1,0 +1,9 @@
+{
+    "name": "表格名称",
+    "action": {
+        "bind": {
+            "table": "users"
+        },
+        "search": {}
+    }
+}
