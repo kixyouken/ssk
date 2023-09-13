@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"ssk/models"
 	"ssk/services"
 	"strings"
 
@@ -11,12 +10,11 @@ import (
 func Get(c *gin.Context) {
 	path := c.Request.URL.Path
 	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
-	model := []models.BaseModel{}
-
-	services.GetPage(c, pathSlice[1], &model, "*", "")
+	result := []map[string]interface{}{}
+	services.GetPage(c, pathSlice[1], &result, "*", "")
 	c.JSON(200, gin.H{
 		"message": "Get",
-		"data":    model,
+		"data":    result,
 	})
 }
 
