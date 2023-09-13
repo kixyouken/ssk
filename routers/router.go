@@ -9,13 +9,13 @@ import (
 func GetRouter() *gin.Engine {
 	r := gin.Default()
 
-	api := r.Group("/api")
+	admin := r.Group("/admin")
 	{
-		api.GET("/:controller", controllers.Get)
-		api.GET("/:controller/:id", controllers.Read)
-		api.POST("/:controller", controllers.Save)
-		api.PUT("/:controller/:id", controllers.Update)
-		api.DELETE("/:controller/:id", controllers.Delete)
+		admin.GET("/table/:model", controllers.Get)
+		admin.GET("/form/:model/:id", controllers.Read)
+		admin.POST("/form/:model", controllers.Save)
+		admin.PUT("/form/:model/:id", controllers.Update)
+		admin.DELETE("/table/:model/:id", controllers.Delete)
 	}
 
 	r.GET("/ping", func(c *gin.Context) {
