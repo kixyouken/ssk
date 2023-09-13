@@ -1,18 +1,14 @@
-package tables
+package forms
 
-type BaseTable struct {
+type BaseForm struct {
 	Name   string `json:"name"`
 	Action Action `json:"action"`
 }
 
 type Action struct {
-	Bind   Bind   `json:"bind"`
-	Search Search `json:"search"`
+	Bind Bind `json:"bind"`
 }
 
 type Bind struct {
 	Model string `json:"model"`
-}
-
-type Search struct {
 }

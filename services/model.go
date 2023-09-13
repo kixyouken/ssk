@@ -56,6 +56,11 @@ func (s *sModelService) GetCount(c *gin.Context, table string) int64 {
 	return count
 }
 
+func (s *sModelService) GetID(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
+	return db.Table(table).Limit(1).Where("id = ?", id).Select(column).Find(out).Error
+
+}
+
 // Paginate 分页处理
 //
 //	@receiver s

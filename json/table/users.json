@@ -2,8 +2,20 @@
     "name": "表格名称",
     "action": {
         "bind": {
-            "table": "users"
+            "model": "users"
         },
         "search": {}
+    },
+    "layout": {
+        "table": {
+            "columns": [
+                {
+                    "name": "ID"
+                },
+                {
+                    "name": "姓名"
+                }
+            ]
+        }
     }
 }

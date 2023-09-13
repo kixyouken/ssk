@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"os"
+	"ssk/jsons/forms"
 	"ssk/jsons/models"
 	"ssk/jsons/tables"
 	"strings"
@@ -67,4 +68,25 @@ func (s *sFileService) GetModelFileColumns(c *gin.Context, columns []models.Colu
 	}
 
 	return column
+}
+
+// GetFormFile 获取 form 的 json 文件
+//
+//	@receiver s
+//	@param c
+//	@return *forms.BaseForm
+func (s *sFileService) GetFormFile(c *gin.Context) *forms.BaseForm {
+	path := c.Request.URL.Path
+	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
+	form := pathSlice[len(pathSlice)-2]
+	formFile := "./json/form/" + form + ".json"
+	body, err := os.ReadFile(formFile)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to read JSON file"})
+		return nil
+	}
+	formJson := forms.BaseForm{}
+	json.Unmarshal(body, &formJson)
+
+	return &formJson
 }
