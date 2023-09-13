@@ -1,11 +1,42 @@
 {
     "name": "用户",
     "table": {
-        "name": "users"
+        "name": "users",
+        "joins": [
+            {
+                "name": "master_university",
+                "foreign": "id",
+                "key": "master_university_id",
+                "join": "inner"
+            },
+            {
+                "name": "master_job",
+                "foreign": "id",
+                "key": "master_job_id",
+                "join": "inner"
+            }
+        ]
     },
     "columns": [
-        { "label": "ID", "name": "id" },
-        { "label": "姓名", "name": "name" },
-        { "label": "邮箱", "name": "email" }
+        {
+            "label": "ID",
+            "name": "id"
+        },
+        {
+            "label": "姓名",
+            "name": "name"
+        },
+        {
+            "label": "邮箱",
+            "name": "email"
+        },
+        {
+            "label": "学校名称",
+            "name": "master_university.name AS university_name"
+        },
+        {
+            "label": "職種名称",
+            "name": "master_job.name AS job_name"
+        }
     ]
 }

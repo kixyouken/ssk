@@ -61,13 +61,26 @@ func (s *sFileService) GetModelFile(c *gin.Context, model string) *models.BaseMo
 //	@param c
 //	@param columns
 //	@return []string
-func (s *sFileService) GetModelFileColumns(c *gin.Context, columns []models.Columns) []string {
+func (s *sFileService) GetModelFileColumns(c *gin.Context, model models.BaseModel) []string {
 	column := []string{}
-	for _, v := range columns {
-		column = append(column, "`"+v.Name+"`")
+	for _, v := range model.Columns {
+		if !strings.Contains(v.Name, ".") {
+			column = append(column, "`"+model.Table.Name+"`.`"+v.Name+"`")
+		} else {
+			column = append(column, v.Name)
+		}
 	}
 
 	return column
+}
+
+func (s *sFileService) GetModelFileJoins(c *gin.Context, model models.BaseModel) []string {
+	join := []string{}
+	for _, v := range model.Table.Joins {
+		join = append(join, strings.ToUpper(v.Join)+" JOIN "+v.Name+" ON "+v.Name+"."+v.Foreign+" = "+model.Table.Name+"."+v.Key)
+	}
+
+	return join
 }
 
 // GetFormFile 获取 form 的 json 文件

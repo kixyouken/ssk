@@ -36,8 +36,8 @@ func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, co
 //	@param column 字段
 //	@param order 排序
 //	@return error
-func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string) error {
-	return db.Table(table).Scopes(s.Paginate(c), s.Order(order)).Select(column).Find(out).Error
+func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, joins ...string) error {
+	return db.Table(table).Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...)).Select(column).Find(out).Error
 }
 
 // GetCount 查询数量
@@ -95,9 +95,21 @@ func (s *sModelService) Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 //	@return func(db *gorm.DB) *gorm.DB
 func (s *sModelService) Order(order string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if order == "" {
-			order = "id DESC"
-		}
 		return db.Order(order)
+	}
+}
+
+// Joins 模型关联处理
+//
+//	@receiver s
+//	@param joins
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
+func (s *sModelService) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		for _, v := range joins {
+			db.Joins(v)
+		}
+		return db
 	}
 }
