@@ -8,7 +8,7 @@ import (
 
 func GetTable(c *gin.Context) {
 	table := services.FileService.GetTableFile(c)
-	if table != nil {
+	if table == nil {
 		return
 	}
 	c.JSON(200, gin.H{
@@ -19,7 +19,7 @@ func GetTable(c *gin.Context) {
 
 func GetForm(c *gin.Context) {
 	form := services.FileService.GetFormFile(c)
-	if form != nil {
+	if form == nil {
 		return
 	}
 	c.JSON(200, gin.H{

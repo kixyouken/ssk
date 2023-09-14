@@ -5,7 +5,15 @@
             "model": "users"
         },
         "wheres": [
-            { "field": "id", "search": "eq" }
+            {
+                "field": "users.id",
+                "search": "eq"
+            },
+            {
+                "field": "name",
+                "search": "like",
+                "type": "left"
+            }
         ],
         "orders": [],
         "limit": 10

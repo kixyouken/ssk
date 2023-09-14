@@ -6,13 +6,16 @@ type BaseTable struct {
 }
 
 type Action struct {
-	Bind   Bind   `json:"bind"`
-	Search Search `json:"search"`
+	Bind   Bind     `json:"bind"`
+	Wheres []Wheres `json:"wheres"`
 }
 
 type Bind struct {
 	Model string `json:"model"`
 }
 
-type Search struct {
+type Wheres struct {
+	Field  string `json:"field"`
+	Search string `json:"search"`
+	Type   string `json:"type"`
 }

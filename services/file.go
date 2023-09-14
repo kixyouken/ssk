@@ -55,13 +55,13 @@ func (s *sFileService) GetModelFile(c *gin.Context, model string) *models.BaseMo
 	return &modelJson
 }
 
-// GetModelFileColumns 获取 model 的字段列信息
+// GetModelColumns 获取 model 的字段列信息
 //
 //	@receiver s
 //	@param c
-//	@param columns
+//	@param model
 //	@return []string
-func (s *sFileService) GetModelFileColumns(c *gin.Context, model models.BaseModel) []string {
+func (s *sFileService) GetModelColumns(c *gin.Context, model models.BaseModel) []string {
 	column := []string{}
 	for _, v := range model.Columns {
 		if !strings.Contains(v.Field, ".") {
@@ -74,7 +74,7 @@ func (s *sFileService) GetModelFileColumns(c *gin.Context, model models.BaseMode
 	return column
 }
 
-func (s *sFileService) GetModelFileJoins(c *gin.Context, model models.BaseModel) []string {
+func (s *sFileService) GetModelJoins(c *gin.Context, model models.BaseModel) []string {
 	join := []string{}
 	for _, v := range model.Table.Joins {
 		join = append(join, strings.ToUpper(v.Join)+" JOIN "+v.Name+" ON "+v.Name+"."+v.Foreign+" = "+model.Table.Name+"."+v.Key)

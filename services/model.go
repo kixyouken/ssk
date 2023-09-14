@@ -1,8 +1,10 @@
 package services
 
 import (
+	"net/url"
 	"ssk/databases"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,7 +39,7 @@ func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, co
 //	@param order 排序
 //	@return error
 func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, joins ...string) error {
-	return db.Table(table).Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...)).Select(column).Find(out).Error
+	return db.Table(table).Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...), s.Search(c)).Select(column).Find(out).Error
 }
 
 // GetCount 查询数量
@@ -46,9 +48,9 @@ func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, c
 //	@param c
 //	@param table 表名
 //	@return int64
-func (s *sModelService) GetCount(c *gin.Context, table string) int64 {
+func (s *sModelService) GetCount(c *gin.Context, table string, joins ...string) int64 {
 	var count int64
-	err := db.Table(table).Count(&count).Error
+	err := db.Table(table).Scopes(s.Joins(joins...), s.Search(c)).Count(&count).Error
 	if err != nil {
 		return 0
 	}
@@ -112,4 +114,40 @@ func (s *sModelService) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 		}
 		return db
 	}
+}
+
+func (s *sModelService) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		// 获取URL参数
+		params, _ := url.QueryUnescape(c.Request.URL.RawQuery)
+		if params != "" {
+			paramList := strings.Split(params, "&")
+			for _, param := range paramList {
+				whereList := strings.Split(param, "|")
+				switch whereList[1] {
+				case "like.left":
+					db.Where(whereList[0]+" LIKE ?", "%"+whereList[2])
+				case "like.right":
+					db.Where(whereList[0]+" LIKE ?", whereList[2]+"%")
+				case "like.all":
+					db.Where(whereList[0]+" LIKE ?", "%"+whereList[2]+"%")
+				default:
+					db.Where(whereList[0]+s.WhereType(whereList[1]), whereList[2])
+				}
+			}
+		}
+		return db
+	}
+}
+
+func (s *sModelService) WhereType(where string) string {
+	switch where {
+	case "eq":
+		where = " = ?"
+	case "lt":
+		where = " < ?"
+	case "gt":
+		where = " > ?"
+	}
+	return where
 }
