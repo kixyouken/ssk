@@ -9,19 +9,14 @@ import (
 
 func Get(c *gin.Context) {
 	table := services.FileService.GetTableFile(c)
-	order := services.FileService.GetTableOrders(c, *table)
-	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
-	column := services.FileService.GetModelColumns(c, *model)
-	join := services.FileService.GetModelJoins(c, *model)
-
-	count := services.ModelService.GetCount(c, model.Table.Name, join...)
+	count := services.ModelService.GetCount(c)
 	if table.Action.Count > 0 && int64(table.Action.Count) < count {
 		count = int64(table.Action.Count)
 	}
 
 	result := []map[string]interface{}{}
 	if count > 0 {
-		services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join...)
+		services.ModelService.GetPage(c, &result)
 	}
 
 	c.JSON(200, gin.H{
@@ -32,16 +27,11 @@ func Get(c *gin.Context) {
 }
 
 func Read(c *gin.Context) {
-	form := services.FileService.GetFormFile(c)
-
-	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
-	column := services.FileService.GetModelColumns(c, *model)
-	join := services.FileService.GetModelJoins(c, *model)
-
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
 	result := map[string]interface{}{}
-	services.ModelService.GetID(c, model.Table.Name, idInt, &result, column, join...)
+	services.ModelService.GetID(c, &result, idInt)
+
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    result,

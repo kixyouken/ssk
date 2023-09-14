@@ -3,6 +3,7 @@ package services
 import (
 	"net/url"
 	"ssk/databases"
+	"ssk/jsons/models"
 	"strconv"
 	"strings"
 
@@ -38,9 +39,15 @@ func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, co
 //	@param column 字段
 //	@param order 排序
 //	@return error
-func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, joins ...string) error {
-	return db.Table(table).
-		Scopes(s.Paginate(c), s.Order(order), s.Joins(joins...), s.Search(c), s.Deleted(c)).
+func (s *sModelService) GetPage(c *gin.Context, out interface{}) error {
+	table := FileService.GetTableFile(c)
+	order := FileService.GetTableOrders(c, *table)
+	model := FileService.GetModelFile(c, table.Action.Bind.Model)
+	column := FileService.GetModelColumns(c, *model)
+	join := FileService.GetModelJoins(c, *model)
+
+	return db.Table(model.Table.Name).
+		Scopes(s.Paginate(c), s.Order(order), s.Joins(join...), s.Search(c), s.Deleted(c, *model)).
 		Select(column).Find(out).Error
 }
 
@@ -50,10 +57,14 @@ func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, c
 //	@param c
 //	@param table 表名
 //	@return int64
-func (s *sModelService) GetCount(c *gin.Context, table string, joins ...string) int64 {
+func (s *sModelService) GetCount(c *gin.Context) int64 {
+	table := FileService.GetTableFile(c)
+	model := FileService.GetModelFile(c, table.Action.Bind.Model)
+	join := FileService.GetModelJoins(c, *model)
+
 	var count int64
-	err := db.Table(table).
-		Scopes(s.Joins(joins...), s.Search(c), s.Deleted(c)).
+	err := db.Table(model.Table.Name).
+		Scopes(s.Joins(join...), s.Search(c), s.Deleted(c, *model)).
 		Count(&count).Error
 	if err != nil {
 		return 0
@@ -71,8 +82,15 @@ func (s *sModelService) GetCount(c *gin.Context, table string, joins ...string) 
 //	@param out
 //	@param column 字段
 //	@return error
-func (s *sModelService) GetID(c *gin.Context, table string, id int, out interface{}, column interface{}, joins ...string) error {
-	return db.Table(table).Scopes(s.Joins(joins...)).Limit(1).Where(table+".id = ?", id).
+func (s *sModelService) GetID(c *gin.Context, out interface{}, id int) error {
+	form := FileService.GetFormFile(c)
+	model := FileService.GetModelFile(c, form.Action.Bind.Model)
+	column := FileService.GetModelColumns(c, *model)
+	join := FileService.GetModelJoins(c, *model)
+
+	return db.Table(model.Table.Name).
+		Scopes(s.Joins(join...), s.Deleted(c, *model)).
+		Limit(1).Where(model.Table.Name+".id = ?", id).
 		Select(column).Find(out).Error
 
 }
@@ -143,11 +161,14 @@ func (s *sModelService) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func (s *sModelService) Deleted(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+// Deleted 默认删除条件
+//
+//	@receiver s
+//	@param c
+//	@return db
+//	@return func(db *gorm.DB) *gorm.DB
+func (s *sModelService) Deleted(c *gin.Context, model models.BaseModel) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		table := FileService.GetTableFile(c)
-		model := FileService.GetModelFile(c, table.Action.Bind.Model)
-
 		if model.Table.Deleted != nil {
 			if model.Table.Deleted.Value != "" {
 				db.Where(model.Table.Name+"."+model.Table.Deleted.Field+" = ?", model.Table.Deleted.Value)
