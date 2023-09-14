@@ -15,8 +15,18 @@
                 "type": "left"
             }
         ],
-        "orders": [],
-        "limit": 10
+        "orders": [
+            {
+                "field": "users.id",
+                "sort": "desc"
+            },
+            {
+                "field": "master_university.id"
+            }
+        ],
+        "page": 2,
+        "limit": 5,
+        "count": 20
     },
     "layout": {
         "table": {

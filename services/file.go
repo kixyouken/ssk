@@ -36,6 +36,21 @@ func (s *sFileService) GetTableFile(c *gin.Context) *tables.BaseTable {
 	return &tableJson
 }
 
+// GetTableOrders 获取 table 的排序信息
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return string
+func (s *sFileService) GetTableOrders(c *gin.Context, table tables.BaseTable) string {
+	orderList := []string{}
+	for _, v := range table.Action.Orders {
+		orderList = append(orderList, v.Field+" "+strings.ToUpper(v.Sort))
+	}
+
+	return strings.Join(orderList, ",")
+}
+
 // GetModelFile 获取 model 的 json 文件
 //
 //	@receiver s
@@ -74,6 +89,12 @@ func (s *sFileService) GetModelColumns(c *gin.Context, model models.BaseModel) [
 	return column
 }
 
+// GetModelJoins 获取 model 的关联信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
 func (s *sFileService) GetModelJoins(c *gin.Context, model models.BaseModel) []string {
 	join := []string{}
 	for _, v := range model.Table.Joins {

@@ -58,6 +58,15 @@ func (s *sModelService) GetCount(c *gin.Context, table string, joins ...string) 
 	return count
 }
 
+// GetID 根据ID查询
+//
+//	@receiver s
+//	@param c
+//	@param table 表名
+//	@param id
+//	@param out
+//	@param column 字段
+//	@return error
 func (s *sModelService) GetID(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
 	return db.Table(table).Limit(1).Where("id = ?", id).Select(column).Find(out).Error
 
@@ -71,12 +80,21 @@ func (s *sModelService) GetID(c *gin.Context, table string, id int, out interfac
 //	@return func(db *gorm.DB) *gorm.DB
 func (s *sModelService) Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		page, _ := strconv.Atoi(c.Query("page"))
-		if page <= 0 {
+		table := FileService.GetTableFile(c)
+		page := table.Action.Page
+		if table.Action.Page <= 0 {
 			page = 1
 		}
 
-		limit, _ := strconv.Atoi(c.Query("limit"))
+		urlPage, _ := strconv.Atoi(c.Query("page"))
+		if urlPage > 0 {
+			page = urlPage
+		}
+
+		limit := table.Action.Limit
+		if limit > int(table.Action.Count) {
+			limit = int(table.Action.Count)
+		}
 		switch {
 		case limit > 100:
 			limit = 100
@@ -119,9 +137,9 @@ func (s *sModelService) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 func (s *sModelService) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		// 获取URL参数
-		params, _ := url.QueryUnescape(c.Request.URL.RawQuery)
+		params, _ := url.QueryUnescape(c.Query("search"))
 		if params != "" {
-			paramList := strings.Split(params, "&")
+			paramList := strings.Split(params, "$")
 			for _, param := range paramList {
 				whereList := strings.Split(param, "|")
 				switch whereList[1] {

@@ -9,14 +9,19 @@ import (
 
 func Get(c *gin.Context) {
 	table := services.FileService.GetTableFile(c)
+	order := services.FileService.GetTableOrders(c, *table)
 	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
 	column := services.FileService.GetModelColumns(c, *model)
 	join := services.FileService.GetModelJoins(c, *model)
+
 	count := services.ModelService.GetCount(c, model.Table.Name, join...)
+	if int64(table.Action.Count) < count {
+		count = int64(table.Action.Count)
+	}
 
 	result := []map[string]interface{}{}
 	if count > 0 {
-		services.ModelService.GetPage(c, model.Table.Name, &result, column, model.Table.Name+".id DESC", join...)
+		services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join...)
 	}
 
 	c.JSON(200, gin.H{
