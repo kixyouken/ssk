@@ -12,6 +12,7 @@ func Get(c *gin.Context) {
 	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
 	column := services.FileService.GetModelFileColumns(c, *model)
 	join := services.FileService.GetModelFileJoins(c, *model)
+
 	result := []map[string]interface{}{}
 	services.ModelService.GetPage(c, model.Table.Name, &result, column, model.Table.Name+".id DESC", join...)
 	count := services.ModelService.GetCount(c, model.Table.Name)
@@ -19,8 +20,6 @@ func Get(c *gin.Context) {
 		"message": "success",
 		"data":    result,
 		"count":   count,
-		"table":   table,
-		"model":   model,
 	})
 }
 
@@ -28,6 +27,7 @@ func Read(c *gin.Context) {
 	form := services.FileService.GetFormFile(c)
 	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
 	column := services.FileService.GetModelFileColumns(c, *model)
+
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
 	result := map[string]interface{}{}
@@ -35,8 +35,6 @@ func Read(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    result,
-		"form":    form,
-		"model":   model,
 	})
 }
 

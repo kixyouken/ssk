@@ -20,23 +20,23 @@
     "columns": [
         {
             "label": "ID",
-            "name": "id"
+            "field": "id"
         },
         {
             "label": "姓名",
-            "name": "name"
+            "field": "name"
         },
         {
             "label": "邮箱",
-            "name": "email"
+            "field": "email"
         },
         {
             "label": "学校名称",
-            "name": "master_university.name AS university_name"
+            "field": "master_university.name AS university_name"
         },
         {
             "label": "職種名称",
-            "name": "master_job.name AS job_name"
+            "field": "master_job.name AS job_name"
         }
     ]
 }

@@ -64,10 +64,10 @@ func (s *sFileService) GetModelFile(c *gin.Context, model string) *models.BaseMo
 func (s *sFileService) GetModelFileColumns(c *gin.Context, model models.BaseModel) []string {
 	column := []string{}
 	for _, v := range model.Columns {
-		if !strings.Contains(v.Name, ".") {
-			column = append(column, "`"+model.Table.Name+"`.`"+v.Name+"`")
+		if !strings.Contains(v.Field, ".") {
+			column = append(column, "`"+model.Table.Name+"`.`"+v.Field+"`")
 		} else {
-			column = append(column, v.Name)
+			column = append(column, v.Field)
 		}
 	}
 
@@ -91,7 +91,7 @@ func (s *sFileService) GetModelFileJoins(c *gin.Context, model models.BaseModel)
 func (s *sFileService) GetFormFile(c *gin.Context) *forms.BaseForm {
 	path := c.Request.URL.Path
 	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
-	form := pathSlice[len(pathSlice)-2]
+	form := pathSlice[len(pathSlice)-1]
 	formFile := "./json/form/" + form + ".json"
 	body, err := os.ReadFile(formFile)
 	if err != nil {

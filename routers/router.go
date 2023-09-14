@@ -11,16 +11,26 @@ func GetRouter() *gin.Engine {
 
 	admin := r.Group("/admin")
 	{
+		// 表格配置
+		admin.GET("/table/:setting", controllers.GetTable)
+		// 表单配置
+		admin.GET("/form/:setting", controllers.GetForm)
+		// 模型配置
+		admin.GET("/model/:setting", controllers.GetModel)
+	}
+
+	api := r.Group("/api")
+	{
 		// 列表信息
-		admin.GET("/table/:model", controllers.Get)
+		api.GET("/table/:model", controllers.Get)
 		// 详情信息
-		admin.GET("/form/:model/:id", controllers.Read)
+		api.GET("/form/:model/:id", controllers.Read)
 		// 添加信息
-		admin.POST("/form/:model", controllers.Save)
+		api.POST("/form/:model", controllers.Save)
 		// 更新信息
-		admin.PUT("/form/:model/:id", controllers.Update)
+		api.PUT("/form/:model/:id", controllers.Update)
 		// 删除信息
-		admin.DELETE("/table/:model/:id", controllers.Delete)
+		api.DELETE("/table/:model/:id", controllers.Delete)
 	}
 
 	r.GET("/ping", func(c *gin.Context) {

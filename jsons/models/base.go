@@ -12,7 +12,7 @@ type Table struct {
 }
 
 type Columns struct {
-	Name  string `json:"name"`
+	Field string `json:"field"`
 	Label string `json:"label"`
 }
 
