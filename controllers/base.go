@@ -15,7 +15,7 @@ func Get(c *gin.Context) {
 	join := services.FileService.GetModelJoins(c, *model)
 
 	count := services.ModelService.GetCount(c, model.Table.Name, join...)
-	if int64(table.Action.Count) < count {
+	if table.Action.Count > 0 && int64(table.Action.Count) < count {
 		count = int64(table.Action.Count)
 	}
 

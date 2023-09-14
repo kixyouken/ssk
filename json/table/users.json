@@ -10,9 +10,41 @@
                 "search": "eq"
             },
             {
+                "field": "users.id",
+                "search": "neq"
+            },
+            {
+                "field": "users.id",
+                "search": "gt"
+            },
+            {
+                "field": "users.id",
+                "search": "egt"
+            },
+            {
+                "field": "users.id",
+                "search": "lt"
+            },
+            {
+                "field": "users.id",
+                "search": "elt"
+            },
+            {
                 "field": "name",
                 "search": "like",
                 "type": "left"
+            },
+            {
+                "field": "birthday",
+                "search": "between.date"
+            },
+            {
+                "field": "users.id",
+                "search": "in"
+            },
+            {
+                "field": "users.id",
+                "search": "notin"
             }
         ],
         "orders": [
@@ -24,9 +56,8 @@
                 "field": "master_university.id"
             }
         ],
-        "page": 2,
-        "limit": 5,
-        "count": 20
+        "page": 1,
+        "limit": 10
     },
     "layout": {
         "table": {

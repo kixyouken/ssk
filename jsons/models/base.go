@@ -7,8 +7,9 @@ type BaseModel struct {
 }
 
 type Table struct {
-	Name  string  `json:"name"`
-	Joins []Joins `json:"joins"`
+	Name    string   `json:"name"`
+	Joins   []Joins  `json:"joins"`
+	Deleted *Deleted `json:"deleted"`
 }
 
 type Columns struct {
@@ -21,4 +22,9 @@ type Joins struct {
 	Foreign string `json:"foreign"`
 	Key     string `json:"key"`
 	Join    string `json:"join"`
+}
+
+type Deleted struct {
+	Field string `json:"field"`
+	Value string `json:"value"`
 }

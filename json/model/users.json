@@ -15,7 +15,11 @@
                 "key": "master_job_id",
                 "join": "inner"
             }
-        ]
+        ],
+        "deleted": {
+            "field": "deleted_at",
+            "value": ""
+        }
     },
     "columns": [
         {
@@ -29,6 +33,10 @@
         {
             "label": "邮箱",
             "field": "email"
+        },
+        {
+            "label": "生日",
+            "field": "birthday"
         },
         {
             "label": "学校名称",
