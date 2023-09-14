@@ -71,8 +71,9 @@ func (s *sModelService) GetCount(c *gin.Context, table string, joins ...string) 
 //	@param out
 //	@param column 字段
 //	@return error
-func (s *sModelService) GetID(c *gin.Context, table string, id int, out interface{}, column interface{}) error {
-	return db.Table(table).Limit(1).Where("id = ?", id).Select(column).Find(out).Error
+func (s *sModelService) GetID(c *gin.Context, table string, id int, out interface{}, column interface{}, joins ...string) error {
+	return db.Table(table).Scopes(s.Joins(joins...)).Limit(1).Where(table+".id = ?", id).
+		Select(column).Find(out).Error
 
 }
 

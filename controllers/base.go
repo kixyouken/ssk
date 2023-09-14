@@ -33,13 +33,15 @@ func Get(c *gin.Context) {
 
 func Read(c *gin.Context) {
 	form := services.FileService.GetFormFile(c)
+
 	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
 	column := services.FileService.GetModelColumns(c, *model)
+	join := services.FileService.GetModelJoins(c, *model)
 
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
 	result := map[string]interface{}{}
-	services.ModelService.GetID(c, model.Table.Name, idInt, &result, column)
+	services.ModelService.GetID(c, model.Table.Name, idInt, &result, column, join...)
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    result,

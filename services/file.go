@@ -22,8 +22,8 @@ var FileService = sFileService{}
 //	@return *tables.BaseTable
 func (s *sFileService) GetTableFile(c *gin.Context) *tables.BaseTable {
 	path := c.Request.URL.Path
-	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
-	table := pathSlice[len(pathSlice)-1]
+	pathList := strings.Split(strings.TrimLeft(path, "/"), "/")
+	table := pathList[len(pathList)-1]
 	tableFile := "./json/table/" + table + ".json"
 	body, err := os.ReadFile(tableFile)
 	if err != nil {
@@ -111,8 +111,11 @@ func (s *sFileService) GetModelJoins(c *gin.Context, model models.BaseModel) []s
 //	@return *forms.BaseForm
 func (s *sFileService) GetFormFile(c *gin.Context) *forms.BaseForm {
 	path := c.Request.URL.Path
-	pathSlice := strings.Split(strings.TrimLeft(path, "/"), "/")
-	form := pathSlice[len(pathSlice)-1]
+	pathList := strings.Split(strings.TrimLeft(path, "/"), "/")
+	form := pathList[len(pathList)-2]
+	if pathList[0] == "admin" {
+		form = pathList[len(pathList)-1]
+	}
 	formFile := "./json/form/" + form + ".json"
 	body, err := os.ReadFile(formFile)
 	if err != nil {
