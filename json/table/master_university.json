@@ -1,0 +1,23 @@
+{
+    "name": "学校",
+    "action": {
+        "bind": {
+            "model": "master_university"
+        },
+        "orders": [],
+        "page": 1,
+        "limit": 10
+    },
+    "layout": {
+        "table": {
+            "columns": [
+                {
+                    "name": "ID"
+                },
+                {
+                    "name": "姓名"
+                }
+            ]
+        }
+    }
+}

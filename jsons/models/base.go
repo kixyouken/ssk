@@ -9,6 +9,7 @@ type BaseModel struct {
 type Table struct {
 	Name    string   `json:"name"`
 	Joins   []Joins  `json:"joins"`
+	Withs   []Withs  `json:"withs"`
 	Deleted *Deleted `json:"deleted"`
 }
 
@@ -36,4 +37,19 @@ type Wheres struct {
 	Search string `json:"search"`
 	Type   string `json:"type"`
 	Value  string `json:"value"`
+}
+
+type Withs struct {
+	Name    string    `json:"name"`
+	Foreign string    `json:"foreign"`
+	Key     string    `json:"key"`
+	Join    string    `json:"join"`
+	Wheres  []Wheres  `json:"wheres"`
+	Columns []Columns `json:"columns"`
+	Orders  []Orders  `json:"orders"`
+}
+
+type Orders struct {
+	Field string `json:"field"`
+	Sort  string `json:"sort"`
 }

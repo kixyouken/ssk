@@ -30,8 +30,10 @@ var db = databases.InitMysql()
 //	@param column 字段
 //	@param order 排序
 //	@return error
-func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, column interface{}, order string) error {
-	return db.Table(table).Find(out).Error
+func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, column interface{}, order string, search interface{}) error {
+	return db.Table(table).Where(search).
+		Scopes(s.Order(order)).Select(column).
+		Limit(10).Find(out).Error
 }
 
 // GetPage 分页查询

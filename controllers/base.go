@@ -19,6 +19,11 @@ func Get(c *gin.Context) {
 		services.ModelService.GetPage(c, &result)
 	}
 
+	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
+	if model.Table.Withs != nil {
+		result = services.HandleService.GetWiths(c, result)
+	}
+
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    result,
