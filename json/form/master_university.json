@@ -1,0 +1,8 @@
+{
+    "name": "用户表",
+    "action": {
+        "bind": {
+            "model": "master_university"
+        }
+    }
+}

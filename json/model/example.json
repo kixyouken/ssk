@@ -34,6 +34,30 @@
                 "join": "inner"
             }
         ],
+        "withs": [
+            {
+                "name": "users",
+                "foreign": "master_university_id",
+                "key": "id",
+                "join": "inner",
+                "columns": [
+                    {
+                        "label": "用户ID",
+                        "field": "id"
+                    },
+                    {
+                        "label": "用户名称",
+                        "field": "name"
+                    }
+                ],
+                "orders": [
+                    {
+                        "field": "id",
+                        "sort": "desc"
+                    }
+                ]
+            }
+        ],
         "deleted": {
             "field": "deleted_at",
             "value": ""

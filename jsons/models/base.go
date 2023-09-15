@@ -7,10 +7,11 @@ type BaseModel struct {
 }
 
 type Table struct {
-	Name    string   `json:"name"`
-	Joins   []Joins  `json:"joins"`
-	Withs   []Withs  `json:"withs"`
-	Deleted *Deleted `json:"deleted"`
+	Name       string       `json:"name"`
+	Joins      []Joins      `json:"joins"`
+	Withs      []Withs      `json:"withs"`
+	WithsCount []WithsCount `json:"Withs_count"`
+	Deleted    *Deleted     `json:"deleted"`
 }
 
 type Columns struct {
@@ -52,4 +53,12 @@ type Withs struct {
 type Orders struct {
 	Field string `json:"field"`
 	Sort  string `json:"sort"`
+}
+
+type WithsCount struct {
+	Name    string   `json:"name"`
+	Foreign string   `json:"foreign"`
+	Key     string   `json:"key"`
+	Join    string   `json:"join"`
+	Wheres  []Wheres `json:"wheres"`
 }

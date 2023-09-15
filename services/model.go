@@ -33,7 +33,7 @@ var db = databases.InitMysql()
 func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, column interface{}, order string, search interface{}) error {
 	return db.Table(table).Where(search).
 		Scopes(s.Order(order)).Select(column).
-		Limit(10).Find(out).Error
+		Find(out).Error
 }
 
 // GetPage 分页查询
@@ -69,6 +69,16 @@ func (s *sModelService) GetCount(c *gin.Context, table string, join []string) in
 	return count
 }
 
+func (s *sModelService) GetWithsCount(c *gin.Context, table string, search interface{}) int64 {
+	var count int64
+	err := db.Table(table).Where(search).Count(&count).Error
+	if err != nil {
+		return 0
+	}
+
+	return count
+}
+
 // GetID 根据ID查询
 //
 //	@receiver s
@@ -78,15 +88,9 @@ func (s *sModelService) GetCount(c *gin.Context, table string, join []string) in
 //	@param out
 //	@param column 字段
 //	@return error
-func (s *sModelService) GetID(c *gin.Context, out interface{}, id int) error {
-	form := FileService.GetFormFile(c)
-	model := FileService.GetModelFile(c, form.Action.Bind.Model)
-	column := FileService.GetModelColumns(c, *model)
-	join := FileService.GetModelJoins(c, *model)
-
-	return db.Table(model.Table.Name).
-		Scopes(s.Joins(join...)).
-		Limit(1).Where(model.Table.Name+".id = ?", id).
+func (s *sModelService) GetID(c *gin.Context, id int, table string, out interface{}, column interface{}, join []string) error {
+	return db.Table(table).Scopes(s.Joins(join...)).
+		Limit(1).Where(table+".id = ?", id).
 		Select(column).Find(out).Error
 
 }

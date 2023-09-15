@@ -24,8 +24,12 @@ func Get(c *gin.Context) {
 		services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join)
 	}
 
+	if model.Table.WithsCount != nil {
+		result = services.HandleService.GetWithsCount(c, result, *model)
+	}
+
 	if model.Table.Withs != nil {
-		result = services.HandleService.GetWiths(c, result)
+		result = services.HandleService.GetWiths(c, result, *model)
 	}
 
 	c.JSON(200, gin.H{
@@ -36,14 +40,27 @@ func Get(c *gin.Context) {
 }
 
 func Read(c *gin.Context) {
+	form := services.FileService.GetFormFile(c)
+	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
+	column := services.FileService.GetModelColumns(c, *model)
+	join := services.FileService.GetModelJoins(c, *model)
+
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
-	result := map[string]interface{}{}
-	services.ModelService.GetID(c, &result, idInt)
+	result := []map[string]interface{}{}
+	services.ModelService.GetID(c, idInt, model.Table.Name, &result, column, join)
+
+	if model.Table.WithsCount != nil {
+		result = services.HandleService.GetWithsCount(c, result, *model)
+	}
+
+	if model.Table.Withs != nil {
+		result = services.HandleService.GetWiths(c, result, *model)
+	}
 
 	c.JSON(200, gin.H{
 		"message": "success",
-		"data":    result,
+		"data":    result[0],
 	})
 }
 

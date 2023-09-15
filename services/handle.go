@@ -11,22 +11,36 @@ type sHandleService struct{}
 
 var HandleService = sHandleService{}
 
+// GetWithsCount 获取 withCount 子查询
+//
+//	@receiver s
+//	@param c
+//	@param result
+//	@return []map
+func (s *sHandleService) GetWithsCount(c *gin.Context, result []map[string]interface{}, model models.BaseModel) []map[string]interface{} {
+	for _, value := range result {
+		for _, v := range model.Table.WithsCount {
+			withCount := ModelService.GetWithsCount(c, v.Name, map[string]interface{}{v.Foreign: value[v.Key]})
+			value[v.Name+"_count"] = withCount
+		}
+	}
+
+	return result
+}
+
 // GetWiths 获取 with 子查询
 //
 //	@receiver s
 //	@param c
 //	@param result
 //	@return []map
-func (s *sHandleService) GetWiths(c *gin.Context, result []map[string]interface{}) []map[string]interface{} {
-	table := FileService.GetTableFile(c)
-	model := FileService.GetModelFile(c, table.Action.Bind.Model)
+func (s *sHandleService) GetWiths(c *gin.Context, result []map[string]interface{}, model models.BaseModel) []map[string]interface{} {
 	for _, value := range result {
 		for _, v := range model.Table.Withs {
-			columns := s.GetWithsColumns(c, *model)
-			order := s.GetWithsOrders(c, *model)
+			columns := s.GetWithsColumns(c, model)
+			order := s.GetWithsOrders(c, model)
 
 			withResult := []map[string]interface{}{}
-
 			ModelService.GetAll(c, v.Name, &withResult, columns, order, map[string]interface{}{v.Foreign: value[v.Key]})
 			value[v.Name] = withResult
 		}

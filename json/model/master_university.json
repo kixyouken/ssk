@@ -2,6 +2,14 @@
     "name": "学校",
     "table": {
         "name": "master_university",
+        "withs_count": [
+            {
+                "name": "users",
+                "foreign": "master_university_id",
+                "key": "id",
+                "join": "inner"
+            }
+        ],
         "withs": [
             {
                 "name": "users",
@@ -27,7 +35,5 @@
             }
         ]
     },
-    "columns": [
-
-    ]
+    "columns": []
 }
