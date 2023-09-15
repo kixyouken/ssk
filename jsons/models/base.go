@@ -18,13 +18,21 @@ type Columns struct {
 }
 
 type Joins struct {
-	Name    string `json:"name"`
-	Foreign string `json:"foreign"`
-	Key     string `json:"key"`
-	Join    string `json:"join"`
+	Name    string   `json:"name"`
+	Foreign string   `json:"foreign"`
+	Key     string   `json:"key"`
+	Join    string   `json:"join"`
+	Wheres  []Wheres `json:"wheres"`
 }
 
 type Deleted struct {
 	Field string `json:"field"`
 	Value string `json:"value"`
+}
+
+type Wheres struct {
+	Field  string `json:"field"`
+	Search string `json:"search"`
+	Type   string `json:"type"`
+	Value  string `json:"value"`
 }

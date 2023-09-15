@@ -97,8 +97,18 @@ func (s *sFileService) GetModelColumns(c *gin.Context, model models.BaseModel) [
 //	@return []string
 func (s *sFileService) GetModelJoins(c *gin.Context, model models.BaseModel) []string {
 	join := []string{}
-	for _, v := range model.Table.Joins {
-		join = append(join, strings.ToUpper(v.Join)+" JOIN "+v.Name+" ON "+v.Name+"."+v.Foreign+" = "+model.Table.Name+"."+v.Key)
+	for _, value := range model.Table.Joins {
+		joinTable := strings.ToUpper(value.Join) + " JOIN " + value.Name + " ON " + value.Name + "." + value.Foreign + " = " + model.Table.Name + "." + value.Key
+		if value.Wheres != nil {
+			joinWhere := []string{}
+			for _, v := range value.Wheres {
+				joinWhere = append(joinWhere, value.Name+"."+v.Field+s.WhereType(v.Search)+"'"+v.Value+"'")
+			}
+			if joinWhere != nil {
+				joinTable += " AND ( " + strings.Join(joinWhere, " AND ") + " )"
+			}
+		}
+		join = append(join, joinTable)
 	}
 
 	return join
@@ -126,4 +136,22 @@ func (s *sFileService) GetFormFile(c *gin.Context) *forms.BaseForm {
 	json.Unmarshal(body, &formJson)
 
 	return &formJson
+}
+
+func (s *sFileService) WhereType(where string) string {
+	switch where {
+	case "eq":
+		where = " = "
+	case "neq":
+		where = " <> "
+	case "lt":
+		where = " < "
+	case "elt":
+		where = " <= "
+	case "gt":
+		where = " > "
+	case "egt":
+		where = " >= "
+	}
+	return where
 }
