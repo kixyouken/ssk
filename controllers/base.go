@@ -9,17 +9,21 @@ import (
 
 func Get(c *gin.Context) {
 	table := services.FileService.GetTableFile(c)
-	count := services.ModelService.GetCount(c)
+	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
+	join := services.FileService.GetModelJoins(c, *model)
+	column := services.FileService.GetModelColumns(c, *model)
+	order := services.FileService.GetTableOrders(c, *table)
+
+	count := services.ModelService.GetCount(c, model.Table.Name, join)
 	if table.Action.Count > 0 && int64(table.Action.Count) < count {
 		count = int64(table.Action.Count)
 	}
 
 	result := []map[string]interface{}{}
 	if count > 0 {
-		services.ModelService.GetPage(c, &result)
+		services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join)
 	}
 
-	model := services.FileService.GetModelFile(c, table.Action.Bind.Model)
 	if model.Table.Withs != nil {
 		result = services.HandleService.GetWiths(c, result)
 	}

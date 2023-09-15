@@ -45,15 +45,9 @@ func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, co
 //	@param column 字段
 //	@param order 排序
 //	@return error
-func (s *sModelService) GetPage(c *gin.Context, out interface{}) error {
-	table := FileService.GetTableFile(c)
-	order := FileService.GetTableOrders(c, *table)
-	model := FileService.GetModelFile(c, table.Action.Bind.Model)
-	column := FileService.GetModelColumns(c, *model)
-	join := FileService.GetModelJoins(c, *model)
-
-	return db.Table(model.Table.Name).
-		Scopes(s.Paginate(c), s.Order(order), s.Joins(join...), s.Search(c), s.Deleted(c, *model)).
+func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, join []string) error {
+	return db.Table(table).
+		Scopes(s.Paginate(c), s.Order(order), s.Joins(join...), s.Search(c)).
 		Select(column).Find(out).Error
 }
 
@@ -63,14 +57,10 @@ func (s *sModelService) GetPage(c *gin.Context, out interface{}) error {
 //	@param c
 //	@param table 表名
 //	@return int64
-func (s *sModelService) GetCount(c *gin.Context) int64 {
-	table := FileService.GetTableFile(c)
-	model := FileService.GetModelFile(c, table.Action.Bind.Model)
-	join := FileService.GetModelJoins(c, *model)
-
+func (s *sModelService) GetCount(c *gin.Context, table string, join []string) int64 {
 	var count int64
-	err := db.Table(model.Table.Name).
-		Scopes(s.Joins(join...), s.Search(c), s.Deleted(c, *model)).
+	err := db.Table(table).
+		Scopes(s.Joins(join...), s.Search(c)).
 		Count(&count).Error
 	if err != nil {
 		return 0
@@ -95,10 +85,21 @@ func (s *sModelService) GetID(c *gin.Context, out interface{}, id int) error {
 	join := FileService.GetModelJoins(c, *model)
 
 	return db.Table(model.Table.Name).
-		Scopes(s.Joins(join...), s.Deleted(c, *model)).
+		Scopes(s.Joins(join...)).
 		Limit(1).Where(model.Table.Name+".id = ?", id).
 		Select(column).Find(out).Error
 
+}
+
+// GetSql 原生 sql 查询
+//
+//	@receiver s
+//	@param c
+//	@param sql
+//	@param out
+//	@return error
+func (s *sModelService) GetSql(c *gin.Context, sql string, out interface{}) error {
+	return db.Raw(sql).Scan(out).Error
 }
 
 // Paginate 分页处理
