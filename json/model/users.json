@@ -9,8 +9,17 @@
                 "key": "master_university_id",
                 "join": "left",
                 "columns": [
+
+                ]
+            },
+            {
+                "name": "master_job",
+                "foreign": "id",
+                "key": "master_job_id",
+                "join": "left",
+                "columns": [
                     {
-                        "label": "大学名称",
+                        "label": "事务名称",
                         "field": "name"
                     }
                 ]

@@ -13,6 +13,10 @@ import (
 
 type sModelService struct{}
 
+type JoinColumns struct {
+	Field string `json:"field"`
+}
+
 var ModelService = sModelService{}
 
 var db = databases.InitMysql()
@@ -180,7 +184,7 @@ func (s *sModelService) Deleted(c *gin.Context, model models.BaseModel) func(db 
 	}
 }
 
-// Columns 获取表字段信息
+// Columns 获取关联表字段信息
 //
 //	@receiver s
 //	@param c
@@ -189,11 +193,19 @@ func (s *sModelService) Deleted(c *gin.Context, model models.BaseModel) func(db 
 func (s *sModelService) JoinColumns(c *gin.Context, model models.BaseModel) []string {
 	columns := []string{}
 	for _, value := range model.Table.Joins {
-		for _, v := range value.Columns {
-			if strings.Contains(v.Field, "as") {
-				columns = append(columns, value.Name+"."+v.Field)
-			} else {
-				columns = append(columns, value.Name+"."+v.Field+" AS "+value.Name+"_"+v.Field)
+		if value.Columns == nil || len(value.Columns) == 0 {
+			joinColumns := []JoinColumns{}
+			db.Raw("SHOW COLUMNS FROM `" + value.Name + "`").Scan(&joinColumns)
+			for _, v := range joinColumns {
+				columns = append(columns, value.Name+"."+v.Field+" AS SSK_"+value.Name+"_"+v.Field)
+			}
+		} else {
+			for _, v := range value.Columns {
+				if strings.Contains(v.Field, "as") || strings.Contains(v.Field, "AS") {
+					columns = append(columns, value.Name+"."+v.Field)
+				} else {
+					columns = append(columns, value.Name+"."+v.Field+" AS "+value.Name+"_"+v.Field)
+				}
 			}
 		}
 	}

@@ -78,11 +78,15 @@ func (s *sFileService) GetModelFile(c *gin.Context, model string) *models.BaseMo
 //	@return []string
 func (s *sFileService) GetModelColumns(c *gin.Context, model models.BaseModel) []string {
 	column := []string{}
-	for _, v := range model.Columns {
-		if !strings.Contains(v.Field, ".") {
-			column = append(column, "`"+model.Table.Name+"`.`"+v.Field+"`")
-		} else {
-			column = append(column, v.Field)
+	if model.Columns == nil || len(model.Columns) == 0 {
+		column = append(column, model.Table.Name+".*")
+	} else {
+		for _, v := range model.Columns {
+			if !strings.Contains(v.Field, ".") {
+				column = append(column, "`"+model.Table.Name+"`.`"+v.Field+"`")
+			} else {
+				column = append(column, v.Field)
+			}
 		}
 	}
 
