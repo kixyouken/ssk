@@ -69,6 +69,13 @@ func (s *sModelService) GetCount(c *gin.Context, table string, join []string) in
 	return count
 }
 
+// GetWithsCount 关联数量
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param search
+//	@return int64
 func (s *sModelService) GetWithsCount(c *gin.Context, table string, search interface{}) int64 {
 	var count int64
 	err := db.Table(table).Where(search).Count(&count).Error
@@ -93,6 +100,34 @@ func (s *sModelService) GetID(c *gin.Context, id int, table string, out interfac
 		Limit(1).Where(table+".id = ?", id).
 		Select(column).Find(out).Error
 
+}
+
+// GetDistinctCount 获取去重统计数量
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param fields
+//	@return int64
+func (s *sModelService) GetDistinctCount(c *gin.Context, table string, fields string) int64 {
+	var count int64
+	err := db.Table(table).Distinct(fields).Count(&count).Error
+	if err != nil {
+		return 0
+	}
+	return count
+}
+
+// GetDistinct 获取去重数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param out
+//	@param fields
+//	@return error
+func (s *sModelService) GetDistinct(c *gin.Context, table string, out interface{}, fields string) error {
+	return db.Raw("SELECT DISTINCT ( " + fields + " ) FROM " + table).Scan(out).Error
 }
 
 // GetSql 原生 sql 查询

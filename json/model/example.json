@@ -58,6 +58,14 @@
                 ]
             }
         ],
+        "withs_count": [
+            {
+                "name": "users",
+                "foreign": "master_university_id",
+                "key": "id",
+                "join": "inner"
+            }
+        ],
         "deleted": {
             "field": "deleted_at",
             "value": ""

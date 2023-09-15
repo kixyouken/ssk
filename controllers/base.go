@@ -3,6 +3,7 @@ package controllers
 import (
 	"ssk/services"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,22 +15,30 @@ func Get(c *gin.Context) {
 	column := services.FileService.GetModelColumns(c, *model)
 	order := services.FileService.GetTableOrders(c, *table)
 
-	count := services.ModelService.GetCount(c, model.Table.Name, join)
-	if table.Action.Count > 0 && int64(table.Action.Count) < count {
-		count = int64(table.Action.Count)
-	}
-
+	var count int64
 	result := []map[string]interface{}{}
-	if count > 0 {
-		services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join)
-	}
+	if table.Action.Bind.Filter.Distinct != nil {
+		fieldList := services.FileService.GetTableDistincts(c, *table)
+		fields := strings.Join(fieldList, ",")
+		count = services.ModelService.GetDistinctCount(c, model.Table.Name, fields)
+		services.ModelService.GetDistinct(c, model.Table.Name, &result, fields)
+	} else {
+		count = services.ModelService.GetCount(c, model.Table.Name, join)
+		if table.Action.Count > 0 && int64(table.Action.Count) < count {
+			count = int64(table.Action.Count)
+		}
 
-	if model.Table.WithsCount != nil {
-		result = services.HandleService.GetWithsCount(c, result, *model)
-	}
+		if count > 0 {
+			services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join)
+		}
 
-	if model.Table.Withs != nil {
-		result = services.HandleService.GetWiths(c, result, *model)
+		if model.Table.WithsCount != nil {
+			result = services.HandleService.GetWithsCount(c, result, *model)
+		}
+
+		if model.Table.Withs != nil {
+			result = services.HandleService.GetWiths(c, result, *model)
+		}
 	}
 
 	c.JSON(200, gin.H{

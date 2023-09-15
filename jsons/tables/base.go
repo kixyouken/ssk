@@ -15,7 +15,8 @@ type Action struct {
 }
 
 type Bind struct {
-	Model string `json:"model"`
+	Model  string `json:"model"`
+	Filter Filter `json:"filter"`
 }
 
 type Wheres struct {
@@ -27,4 +28,12 @@ type Wheres struct {
 type Orders struct {
 	Field string `json:"field"`
 	Sort  string `json:"sort"`
+}
+
+type Filter struct {
+	Distinct []Distinct `json:"distinct"`
+}
+
+type Distinct struct {
+	Field string `json:"field"`
 }

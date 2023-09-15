@@ -51,6 +51,21 @@ func (s *sFileService) GetTableOrders(c *gin.Context, table tables.BaseTable) st
 	return strings.Join(orderList, ",")
 }
 
+// GetTableDistincts 获取去重字段
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@return []string
+func (s *sFileService) GetTableDistincts(c *gin.Context, table tables.BaseTable) []string {
+	distinctList := []string{}
+	for _, v := range table.Action.Bind.Filter.Distinct {
+		distinctList = append(distinctList, v.Field)
+	}
+
+	return distinctList
+}
+
 // GetModelFile 获取 model 的 json 文件
 //
 //	@receiver s

@@ -2,7 +2,14 @@
     "name": "表格名称",
     "action": {
         "bind": {
-            "model": "users"
+            "model": "users",
+            "filter": {
+                "distinct": [
+                    {
+                        "field": "id"
+                    }
+                ]
+            }
         },
         "wheres": [
             {
