@@ -86,6 +86,8 @@ func (s *sFileService) GetModelColumns(c *gin.Context, model models.BaseModel) [
 		}
 	}
 
+	joinColumn := ModelService.JoinColumns(c, model)
+	column = append(column, joinColumn...)
 	return column
 }
 

@@ -51,6 +51,9 @@
             {
                 "field": "users.id",
                 "sort": "desc"
+            },
+            {
+                "field": "master_university.id"
             }
         ],
         "page": 1,

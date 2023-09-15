@@ -180,6 +180,27 @@ func (s *sModelService) Deleted(c *gin.Context, model models.BaseModel) func(db 
 	}
 }
 
+// Columns 获取表字段信息
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return []string
+func (s *sModelService) JoinColumns(c *gin.Context, model models.BaseModel) []string {
+	columns := []string{}
+	for _, value := range model.Table.Joins {
+		for _, v := range value.Columns {
+			if strings.Contains(v.Field, "as") {
+				columns = append(columns, value.Name+"."+v.Field)
+			} else {
+				columns = append(columns, value.Name+"."+v.Field+" AS "+value.Name+"_"+v.Field)
+			}
+		}
+	}
+
+	return columns
+}
+
 // Search 搜索条件处理
 //
 //	@receiver s
