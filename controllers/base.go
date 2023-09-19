@@ -15,6 +15,11 @@ func Get(c *gin.Context) {
 	column := services.FileService.GetModelColumns(c, *model)
 	order := services.FileService.GetTableOrders(c, *table)
 
+	where := ""
+	if model.Table.Wheres != nil {
+		where = services.HandleService.GetModelWheres(c, *model)
+	}
+
 	var count int64
 	result := []map[string]interface{}{}
 	if table.Action.Bind.Filter.Distinct != nil {
@@ -23,13 +28,13 @@ func Get(c *gin.Context) {
 		count = services.ModelService.GetDistinctCount(c, model.Table.Name, fields)
 		services.ModelService.GetDistinct(c, model.Table.Name, &result, fields)
 	} else {
-		count = services.ModelService.GetCount(c, model.Table.Name, join)
+		count = services.ModelService.GetCount(c, model.Table.Name, join, where)
 		if table.Action.Count > 0 && int64(table.Action.Count) < count {
 			count = int64(table.Action.Count)
 		}
 
 		if count > 0 {
-			services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join)
+			services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join, where)
 		}
 
 		if model.Table.WithsCount != nil {

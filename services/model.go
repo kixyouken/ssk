@@ -45,8 +45,8 @@ func (s *sModelService) GetAll(c *gin.Context, table string, out interface{}, co
 //	@param column 字段
 //	@param order 排序
 //	@return error
-func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, join []string) error {
-	return db.Table(table).
+func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, column interface{}, order string, join []string, search interface{}) error {
+	return db.Table(table).Where(search).
 		Scopes(s.Paginate(c), s.Order(order), s.Joins(join...), s.Search(c)).
 		Select(column).Find(out).Error
 }
@@ -57,9 +57,9 @@ func (s *sModelService) GetPage(c *gin.Context, table string, out interface{}, c
 //	@param c
 //	@param table 表名
 //	@return int64
-func (s *sModelService) GetCount(c *gin.Context, table string, join []string) int64 {
+func (s *sModelService) GetCount(c *gin.Context, table string, join []string, search interface{}) int64 {
 	var count int64
-	err := db.Table(table).
+	err := db.Table(table).Where(search).
 		Scopes(s.Joins(join...), s.Search(c)).
 		Count(&count).Error
 	if err != nil {
@@ -202,25 +202,6 @@ func (s *sModelService) Joins(joins ...string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		for _, v := range joins {
 			db.Joins(v)
-		}
-		return db
-	}
-}
-
-// Deleted 默认删除条件
-//
-//	@receiver s
-//	@param c
-//	@return db
-//	@return func(db *gorm.DB) *gorm.DB
-func (s *sModelService) Deleted(c *gin.Context, model models.BaseModel) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		if model.Table.Deleted != nil {
-			if model.Table.Deleted.Value != "" {
-				db.Where(model.Table.Name+"."+model.Table.Deleted.Field+" = ?", model.Table.Deleted.Value)
-			} else {
-				db.Where(model.Table.Name + "." + model.Table.Deleted.Field + " IS NULL")
-			}
 		}
 		return db
 	}

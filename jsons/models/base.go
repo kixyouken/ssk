@@ -11,13 +11,13 @@ type Table struct {
 	Joins      []Joins      `json:"joins"`
 	Withs      []Withs      `json:"withs"`
 	WithsCount []WithsCount `json:"Withs_count"`
-	Deleted    *Deleted     `json:"deleted"`
+	Wheres     []Wheres     `json:"wheres"`
 }
 
 type Columns struct {
 	Field  string  `json:"field"`
 	Label  string  `json:"label"`
-	Attrs  []Attrs `json:"attr"`
+	Attrs  []Attrs `json:"attrs"`
 	Format string  `json:"format"`
 }
 
@@ -33,11 +33,6 @@ type Joins struct {
 	Join    string    `json:"join"`
 	Wheres  []Wheres  `json:"wheres"`
 	Columns []Columns `json:"columns"`
-}
-
-type Deleted struct {
-	Field string `json:"field"`
-	Value string `json:"value"`
 }
 
 type Wheres struct {

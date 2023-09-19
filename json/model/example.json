@@ -65,11 +65,7 @@
                 "key": "id",
                 "join": "inner"
             }
-        ],
-        "deleted": {
-            "field": "deleted_at",
-            "value": ""
-        }
+        ]
     },
     "columns": [
         {

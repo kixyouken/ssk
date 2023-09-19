@@ -27,6 +27,13 @@
                     }
                 ]
             }
+        ],
+        "wheres": [
+            {
+                "field": "id",
+                "search": "like",
+                "value": "100009543"
+            }
         ]
     },
     "columns": [
@@ -54,7 +61,7 @@
         {
             "label": "状态",
             "field": "status",
-            "attr": [
+            "attrs": [
                 {
                     "in": "0",
                     "out": "未入力"

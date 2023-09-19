@@ -137,3 +137,16 @@ func (s *sHandleService) GetFieldFormat(c *gin.Context, model models.BaseModel, 
 
 	return result
 }
+
+func (s *sHandleService) GetModelWheres(c *gin.Context, model models.BaseModel) string {
+	where := ""
+	for _, v := range model.Table.Wheres {
+		if !strings.Contains(v.Field, ".") {
+			where = model.Table.Name + "." + v.Field + " " + v.Search + " '" + v.Value + "'"
+		} else {
+			where = v.Field + " " + v.Search + " '" + v.Value + "'"
+		}
+	}
+
+	return where
+}
