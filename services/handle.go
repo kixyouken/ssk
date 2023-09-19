@@ -2,6 +2,7 @@ package services
 
 import (
 	"ssk/jsons/models"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -80,4 +81,20 @@ func (s *sHandleService) GetWithsOrders(c *gin.Context, model models.BaseModel) 
 	}
 
 	return strings.Join(orders, ",")
+}
+
+func (s *sHandleService) GetFieldText(c *gin.Context, model models.BaseModel, result []map[string]interface{}) []map[string]interface{} {
+	for _, column := range model.Columns {
+		if column.Attrs != nil {
+			for _, attr := range column.Attrs {
+				for _, value := range result {
+					in, _ := strconv.Atoi(attr.In)
+					if value[column.Field] == int32(in) {
+						value[column.Field+"_text"] = attr.Out
+					}
+				}
+			}
+		}
+	}
+	return result
 }

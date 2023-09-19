@@ -15,8 +15,14 @@ type Table struct {
 }
 
 type Columns struct {
-	Field string `json:"field"`
-	Label string `json:"label"`
+	Field string  `json:"field"`
+	Label string  `json:"label"`
+	Attrs []Attrs `json:"attr"`
+}
+
+type Attrs struct {
+	In  string `json:"in"`
+	Out string `json:"out"`
 }
 
 type Joins struct {
