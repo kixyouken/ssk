@@ -43,6 +43,7 @@ func Get(c *gin.Context) {
 
 	if model.Columns != nil {
 		services.HandleService.GetFieldText(c, *model, result)
+		services.HandleService.GetFieldFormat(c, *model, result)
 	}
 
 	c.JSON(200, gin.H{

@@ -44,7 +44,8 @@
         },
         {
             "label": "生日",
-            "field": "birthday"
+            "field": "birthday",
+            "format": "Y-m-d"
         },
         {
             "label": "大学ID",
@@ -99,6 +100,11 @@
                     "out": "メールエラー"
                 }
             ]
+        },
+        {
+            "label": "创建时间",
+            "field": "created_at",
+            "format": "Y-m-d H:i"
         }
     ]
 }

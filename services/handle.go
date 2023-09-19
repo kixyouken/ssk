@@ -4,6 +4,7 @@ import (
 	"ssk/jsons/models"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -83,6 +84,13 @@ func (s *sHandleService) GetWithsOrders(c *gin.Context, model models.BaseModel) 
 	return strings.Join(orders, ",")
 }
 
+// GetFieldText 转文字
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@param result
+//	@return []map
 func (s *sHandleService) GetFieldText(c *gin.Context, model models.BaseModel, result []map[string]interface{}) []map[string]interface{} {
 	for _, column := range model.Columns {
 		if column.Attrs != nil {
@@ -96,5 +104,36 @@ func (s *sHandleService) GetFieldText(c *gin.Context, model models.BaseModel, re
 			}
 		}
 	}
+	return result
+}
+
+// GetFieldFormat 格式化时间
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@param result
+//	@return []map
+func (s *sHandleService) GetFieldFormat(c *gin.Context, model models.BaseModel, result []map[string]interface{}) []map[string]interface{} {
+	for _, column := range model.Columns {
+		if column.Format != "" {
+			format := ""
+			switch column.Format {
+			case "Y-m-d":
+				format = "2006-01-02"
+			case "Y-m-d H":
+				format = "2006-01-02 15"
+			case "Y-m-d H:i":
+				format = "2006-01-02 15:04"
+			case "Y-m-d H:i:s":
+				format = "2006-01-02 15:04:05"
+			}
+			for _, value := range result {
+				date, _ := value[column.Field].(time.Time)
+				value[column.Field] = date.Format(format)
+			}
+		}
+	}
+
 	return result
 }

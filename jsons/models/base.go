@@ -15,9 +15,10 @@ type Table struct {
 }
 
 type Columns struct {
-	Field string  `json:"field"`
-	Label string  `json:"label"`
-	Attrs []Attrs `json:"attr"`
+	Field  string  `json:"field"`
+	Label  string  `json:"label"`
+	Attrs  []Attrs `json:"attr"`
+	Format string  `json:"format"`
 }
 
 type Attrs struct {
