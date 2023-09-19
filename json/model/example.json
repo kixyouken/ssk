@@ -65,6 +65,13 @@
                 "key": "id",
                 "join": "inner"
             }
+        ],
+        "wheres": [
+            {
+                "field": "id",
+                "search": "like",
+                "value": "100009543"
+            }
         ]
     },
     "columns": [
@@ -82,7 +89,8 @@
         },
         {
             "label": "生日",
-            "field": "birthday"
+            "field": "birthday",
+            "format": "Y-m-d"
         },
         {
             "label": "状态",
