@@ -70,11 +70,16 @@ func Read(c *gin.Context) {
 	services.ModelService.GetID(c, idInt, model.Table.Name, &result, column, join)
 
 	if model.Table.WithsCount != nil {
-		result = services.HandleService.GetWithsCount(c, result, *model)
+		services.HandleService.GetWithsCount(c, result, *model)
 	}
 
 	if model.Table.Withs != nil {
-		result = services.HandleService.GetWiths(c, result, *model)
+		services.HandleService.GetWiths(c, result, *model)
+	}
+
+	if model.Columns != nil {
+		services.HandleService.GetFieldText(c, *model, result)
+		services.HandleService.GetFieldFormat(c, *model, result)
 	}
 
 	c.JSON(200, gin.H{
@@ -84,8 +89,16 @@ func Read(c *gin.Context) {
 }
 
 func Save(c *gin.Context) {
+	form := services.FileService.GetFormFile(c)
+	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
+	param := map[string]interface{}{}
+	c.ShouldBind(&param)
+	services.ModelService.SetCreate(c, model.Table.Name, param)
+
+	// TODO: 如何返回 id
 	c.JSON(200, gin.H{
 		"message": "Save",
+		"param":   param,
 	})
 }
 

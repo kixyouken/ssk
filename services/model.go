@@ -141,6 +141,17 @@ func (s *sModelService) GetSql(c *gin.Context, sql string, out interface{}) erro
 	return db.Raw(sql).Scan(out).Error
 }
 
+// SetCreate 添加数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param data
+//	@return error
+func (s *sModelService) SetCreate(c *gin.Context, table string, param map[string]interface{}) error {
+	return db.Table(table).Create(param).Error
+}
+
 // Paginate 分页处理
 //
 //	@receiver s

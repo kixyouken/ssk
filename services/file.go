@@ -23,8 +23,7 @@ var FileService = sFileService{}
 func (s *sFileService) GetTableFile(c *gin.Context) *tables.BaseTable {
 	path := c.Request.URL.Path
 	pathList := strings.Split(strings.TrimLeft(path, "/"), "/")
-	table := pathList[len(pathList)-1]
-	tableFile := "./json/table/" + table + ".json"
+	tableFile := "./json/table/" + pathList[2] + ".json"
 	body, err := os.ReadFile(tableFile)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to read JSON file"})
@@ -143,11 +142,7 @@ func (s *sFileService) GetModelJoins(c *gin.Context, model models.BaseModel) []s
 func (s *sFileService) GetFormFile(c *gin.Context) *forms.BaseForm {
 	path := c.Request.URL.Path
 	pathList := strings.Split(strings.TrimLeft(path, "/"), "/")
-	form := pathList[len(pathList)-2]
-	if pathList[0] == "admin" {
-		form = pathList[len(pathList)-1]
-	}
-	formFile := "./json/form/" + form + ".json"
+	formFile := "./json/form/" + pathList[2] + ".json"
 	body, err := os.ReadFile(formFile)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to read JSON file"})
