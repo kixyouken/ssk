@@ -6,6 +6,7 @@ import (
 	"ssk/jsons/models"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -150,6 +151,28 @@ func (s *sModelService) GetSql(c *gin.Context, sql string, out interface{}) erro
 //	@return error
 func (s *sModelService) SetCreate(c *gin.Context, table string, param map[string]interface{}) error {
 	return db.Table(table).Create(param).Error
+}
+
+// SetUpdate 更新数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param id
+//	@param updates
+//	@return error
+func (s *sModelService) SetUpdate(c *gin.Context, table string, id int, updates interface{}) error {
+	return db.Table(table).Where("id = ?", id).Updates(updates).Error
+}
+
+// SetDelete 删除数据
+//
+//	@receiver s
+//	@param c
+//	@param table
+//	@param id
+func (s *sModelService) SetDelete(c *gin.Context, table string, id int) {
+	db.Table(table).Where("id = ?", id).Update("deleted_at", time.Now())
 }
 
 // Paginate 分页处理

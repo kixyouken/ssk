@@ -103,13 +103,29 @@ func Save(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
+	form := services.FileService.GetFormFile(c)
+	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
+	idStr := c.Param("id")
+	idInt, _ := strconv.Atoi(idStr)
+	param := map[string]interface{}{}
+	c.ShouldBind(&param)
+	services.ModelService.SetUpdate(c, model.Table.Name, idInt, param)
+
 	c.JSON(200, gin.H{
 		"message": "Update",
+		"param":   param,
 	})
 }
 
 func Delete(c *gin.Context) {
+	form := services.FileService.GetFormFile(c)
+	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
+	idStr := c.Param("id")
+	idInt, _ := strconv.Atoi(idStr)
+	services.ModelService.SetDelete(c, model.Table.Name, idInt)
+
 	c.JSON(200, gin.H{
 		"message": "Delete",
+		"id":      idInt,
 	})
 }
