@@ -171,8 +171,19 @@ func (s *sModelService) SetUpdate(c *gin.Context, table string, id int, updates 
 //	@param c
 //	@param table
 //	@param id
-func (s *sModelService) SetDelete(c *gin.Context, table string, id int) {
-	db.Table(table).Where("id = ?", id).Update("deleted_at", time.Now())
+//	@param model
+//	@return error
+func (s *sModelService) SetDelete(c *gin.Context, table string, id int, model models.BaseModel) error {
+	if model.Table.Deleted != nil {
+		switch model.Table.Deleted.Value {
+		case "time":
+			return db.Table(table).Where("id = ?", id).Update(model.Table.Deleted.Field, time.Now()).Error
+		default:
+			return db.Table(table).Where("id = ?", id).Update(model.Table.Deleted.Field, model.Table.Deleted.Value).Error
+		}
+	} else {
+		return db.Table(table).Where("id = ?", id).Update("deleted_at", time.Now()).Error
+	}
 }
 
 // Paginate 分页处理

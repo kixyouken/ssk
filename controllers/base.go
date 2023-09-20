@@ -122,7 +122,7 @@ func Delete(c *gin.Context) {
 	model := services.FileService.GetModelFile(c, form.Action.Bind.Model)
 	idStr := c.Param("id")
 	idInt, _ := strconv.Atoi(idStr)
-	services.ModelService.SetDelete(c, model.Table.Name, idInt)
+	services.ModelService.SetDelete(c, model.Table.Name, idInt, *model)
 
 	c.JSON(200, gin.H{
 		"message": "Delete",

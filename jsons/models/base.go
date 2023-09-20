@@ -12,6 +12,7 @@ type Table struct {
 	Withs      []Withs      `json:"withs"`
 	WithsCount []WithsCount `json:"Withs_count"`
 	Wheres     []Wheres     `json:"wheres"`
+	Deleted    *Deleted     `json:"deleted"`
 }
 
 type Columns struct {
@@ -63,4 +64,9 @@ type WithsCount struct {
 	Key     string   `json:"key"`
 	Join    string   `json:"join"`
 	Wheres  []Wheres `json:"wheres"`
+}
+
+type Deleted struct {
+	Field string `json:"field"`
+	Value string `json:"value"`
 }

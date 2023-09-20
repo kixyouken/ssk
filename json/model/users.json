@@ -28,13 +28,10 @@
                 ]
             }
         ],
-        "wheres": [
-            {
-                "field": "id",
-                "search": "like",
-                "value": "100009543"
-            }
-        ]
+        "deleted": {
+            "field": "deleted_by",
+            "value": "1"
+        }
     },
     "columns": [
         {
