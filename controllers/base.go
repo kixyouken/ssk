@@ -22,27 +22,32 @@ func Get(c *gin.Context) {
 
 	var count int64
 	result := []map[string]interface{}{}
-	if table.Action.Bind.Filter.Distinct != nil {
-		fieldList := services.FileService.GetTableDistincts(c, *table)
-		fields := strings.Join(fieldList, ",")
-		count = services.ModelService.GetDistinctCount(c, model.Table.Name, fields)
-		services.ModelService.GetDistinct(c, model.Table.Name, &result, fields)
+
+	if table.Action.Bind.Paginate != nil {
+		services.ModelService.GetAll(c, model.Table.Name, &result, column, order, where)
 	} else {
-		count = services.ModelService.GetCount(c, model.Table.Name, join, where)
-		if table.Action.Count > 0 && int64(table.Action.Count) < count {
-			count = int64(table.Action.Count)
-		}
+		if table.Action.Bind.Filter.Distinct != nil {
+			fieldList := services.FileService.GetTableDistincts(c, *table)
+			fields := strings.Join(fieldList, ",")
+			count = services.ModelService.GetDistinctCount(c, model.Table.Name, fields)
+			services.ModelService.GetDistinct(c, model.Table.Name, &result, fields)
+		} else {
+			count = services.ModelService.GetCount(c, model.Table.Name, join, where)
+			if table.Action.Count > 0 && int64(table.Action.Count) < count {
+				count = int64(table.Action.Count)
+			}
 
-		if count > 0 {
-			services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join, where)
-		}
+			if count > 0 {
+				services.ModelService.GetPage(c, model.Table.Name, &result, column, order, join, where)
+			}
 
-		if model.Table.WithsCount != nil {
-			result = services.HandleService.GetWithsCount(c, result, *model)
-		}
+			if model.Table.WithsCount != nil {
+				result = services.HandleService.GetWithsCount(c, result, *model)
+			}
 
-		if model.Table.Withs != nil {
-			result = services.HandleService.GetWiths(c, result, *model)
+			if model.Table.Withs != nil {
+				result = services.HandleService.GetWiths(c, result, *model)
+			}
 		}
 	}
 

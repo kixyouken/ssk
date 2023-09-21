@@ -15,8 +15,9 @@ type Action struct {
 }
 
 type Bind struct {
-	Model  string `json:"model"`
-	Filter Filter `json:"filter"`
+	Model    string `json:"model"`
+	Filter   Filter `json:"filter"`
+	Paginate *bool  `json:"paginate"`
 }
 
 type Wheres struct {

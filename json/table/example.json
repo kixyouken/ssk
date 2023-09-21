@@ -9,7 +9,8 @@
                         "field": "id"
                     }
                 ]
-            }
+            },
+            "paginate": false
         },
         "wheres": [
             {

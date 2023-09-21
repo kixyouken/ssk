@@ -1,0 +1,9 @@
+{
+    "name": "菜单表格",
+    "action": {
+        "bind": {
+            "model": "admin_menu",
+            "paginate": false
+        }
+    }
+}
