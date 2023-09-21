@@ -10,7 +10,11 @@
                     }
                 ]
             },
-            "paginate": false
+            "paginate": false,
+            "recursion": {
+                "parent_id": "parent_id",
+                "child_id": "id"
+            }
         },
         "wheres": [
             {

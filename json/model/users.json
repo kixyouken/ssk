@@ -49,7 +49,7 @@
         {
             "label": "生日",
             "field": "birthday",
-            "format": "Y-m-d"
+            "format": "Y年m月d日"
         },
         {
             "label": "大学ID",

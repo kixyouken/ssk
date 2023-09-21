@@ -118,20 +118,15 @@ func (s *sHandleService) GetFieldText(c *gin.Context, model models.BaseModel, re
 func (s *sHandleService) GetFieldFormat(c *gin.Context, model models.BaseModel, result []map[string]interface{}) []map[string]interface{} {
 	for _, column := range model.Columns {
 		if column.Format != "" {
-			format := ""
-			switch column.Format {
-			case "Y-m-d":
-				format = "2006-01-02"
-			case "Y-m-d H":
-				format = "2006-01-02 15"
-			case "Y-m-d H:i":
-				format = "2006-01-02 15:04"
-			case "Y-m-d H:i:s":
-				format = "2006-01-02 15:04:05"
-			}
+			column.Format = strings.Replace(column.Format, "Y", "2006", -1)
+			column.Format = strings.Replace(column.Format, "m", "01", -1)
+			column.Format = strings.Replace(column.Format, "d", "02", -1)
+			column.Format = strings.Replace(column.Format, "H", "15", -1)
+			column.Format = strings.Replace(column.Format, "i", "04", -1)
+			column.Format = strings.Replace(column.Format, "s", "05", -1)
 			for _, value := range result {
 				date, _ := value[column.Field].(time.Time)
-				value[column.Field] = date.Format(format)
+				value[column.Field] = date.Format(column.Format)
 			}
 		}
 	}
@@ -139,6 +134,12 @@ func (s *sHandleService) GetFieldFormat(c *gin.Context, model models.BaseModel, 
 	return result
 }
 
+// GetModelWheres 获取 model 默认搜索条件
+//
+//	@receiver s
+//	@param c
+//	@param model
+//	@return string
 func (s *sHandleService) GetModelWheres(c *gin.Context, model models.BaseModel) string {
 	where := ""
 	for _, v := range model.Table.Wheres {

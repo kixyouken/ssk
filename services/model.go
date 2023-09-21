@@ -1,7 +1,6 @@
 package services
 
 import (
-	"net/url"
 	"ssk/databases"
 	"ssk/jsons/models"
 	"strconv"
@@ -289,38 +288,36 @@ func (s *sModelService) JoinColumns(c *gin.Context, model models.BaseModel) []st
 //	@return func(db *gorm.DB) *gorm.DB
 func (s *sModelService) Search(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		// 获取URL参数
-		params, _ := url.QueryUnescape(c.Query("search"))
-		// 用 $ 符号拼接搜索各条件
-		// search=users.id|eq|100009537$name|like.left|姓名
-		if params != "" {
-			paramList := strings.Split(params, "$")
-			for _, param := range paramList {
-				whereList := strings.Split(param, "|")
-				switch whereList[1] {
+		table := FileService.GetTableFile(c)
+		model := FileService.GetModelFile(c, table.Action.Bind.Model)
+		// ?name=like.left.test&master_university.id=eq.2
+		search := c.Request.URL.Query()
+		for k, v := range search {
+			lastDotIndex := strings.LastIndex(v[0], ".")
+			if lastDotIndex != -1 {
+				where := v[0][:lastDotIndex]
+				value := v[0][lastDotIndex+1:]
+				if !strings.Contains(k, ".") {
+					k = model.Table.Name + "." + k
+				}
+				switch where {
 				case "in":
-					// search=users.id|in|100009537,100009543
-					inList := strings.Split(whereList[2], ",")
-					db.Where(whereList[0]+" IN ?", inList)
+					inList := strings.Split(value, ",")
+					db.Where(k+" IN ?", inList)
 				case "notin":
-					// search=users.id|notin|100009537,100009543
-					notinList := strings.Split(whereList[2], ",")
-					db.Where(whereList[0]+" NOT IN ?", notinList)
+					notinList := strings.Split(value, ",")
+					db.Where(k+" NOT IN ?", notinList)
 				case "like.left":
-					// search=name|like.left|姓名
-					db.Where(whereList[0]+" LIKE ?", "%"+whereList[2])
+					db.Where(k+" LIKE ?", "%"+value)
 				case "like.right":
-					// search=name|like.right|姓名
-					db.Where(whereList[0]+" LIKE ?", whereList[2]+"%")
-				case "like.all":
-					// search=name|like.all|姓名
-					db.Where(whereList[0]+" LIKE ?", "%"+whereList[2]+"%")
+					db.Where(k+" LIKE ?", value+"%")
+				case "like":
+					db.Where(k+" LIKE ?", "%"+value+"%")
 				case "between.date":
-					// search=birthday|between.date|2023-01-01~2023-12-01
-					dateList := strings.Split(whereList[2], "~")
-					db.Where(whereList[0]+" BETWEEN ? AND ?", dateList[0], dateList[1])
+					dateList := strings.Split(value, "~")
+					db.Where(k+" BETWEEN ? AND ?", dateList[0], dateList[1])
 				default:
-					db.Where(whereList[0]+s.WhereType(whereList[1]), whereList[2])
+					db.Where(k+s.WhereType(where), value)
 				}
 			}
 		}

@@ -6,7 +6,7 @@
         },
         "wheres": [
             {
-                "field": "users.id",
+                "field": "id",
                 "search": "eq"
             },
             {
