@@ -15,9 +15,10 @@ type Action struct {
 }
 
 type Bind struct {
-	Model    string `json:"model"`
-	Filter   Filter `json:"filter"`
-	Paginate *bool  `json:"paginate"`
+	Model     string     `json:"model"`
+	Filter    Filter     `json:"filter"`
+	Paginate  *bool      `json:"paginate"`
+	Recursion *Recursion `json:"recursion"`
 }
 
 type Wheres struct {
@@ -37,4 +38,9 @@ type Filter struct {
 
 type Distinct struct {
 	Field string `json:"field"`
+}
+
+type Recursion struct {
+	ParentID string `json:"parent_id"`
+	ChildID  string `json:"child_id"`
 }

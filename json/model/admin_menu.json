@@ -1,6 +1,13 @@
 {
     "name": "菜单",
     "table": {
-        "name": "admin_menu"
+        "name": "admin_menu",
+        "wheres": [
+            {
+                "field": "show",
+                "search": "=",
+                "value": "1"
+            }
+        ]
     }
 }

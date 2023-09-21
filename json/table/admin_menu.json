@@ -3,7 +3,17 @@
     "action": {
         "bind": {
             "model": "admin_menu",
-            "paginate": false
-        }
+            "paginate": false,
+            "recursion": {
+                "parent_id": "parent_id",
+                "child_id": "id"
+            }
+        },
+        "orders": [
+            {
+                "field": "`order`",
+                "sort": "asc"
+            }
+        ]
     }
 }

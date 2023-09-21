@@ -56,6 +56,11 @@ func Get(c *gin.Context) {
 		services.HandleService.GetFieldFormat(c, *model, result)
 	}
 
+	if table.Action.Bind.Recursion != nil {
+		var parent_id int64
+		result = services.HandleService.BuildTree(result, parent_id, *table)
+	}
+
 	c.JSON(200, gin.H{
 		"message": "success",
 		"data":    result,

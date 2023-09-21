@@ -2,6 +2,7 @@ package services
 
 import (
 	"ssk/jsons/models"
+	"ssk/jsons/tables"
 	"strconv"
 	"strings"
 	"time"
@@ -149,4 +150,26 @@ func (s *sHandleService) GetModelWheres(c *gin.Context, model models.BaseModel) 
 	}
 
 	return where
+}
+
+// BuildTree 递归函数，将map数据处理成树形结构
+//
+//	@receiver s
+//	@param items
+//	@param parentID
+//	@param table
+//	@return []map
+func (s *sHandleService) BuildTree(items []map[string]interface{}, parentID int64, table tables.BaseTable) []map[string]interface{} {
+	node := []map[string]interface{}{}
+	// 遍历map，找到所有父ID匹配的项目
+	for i := range items {
+		if items[i][table.Action.Bind.Recursion.ParentID].(int64) == parentID {
+			children := s.BuildTree(items, int64(items[i][table.Action.Bind.Recursion.ChildID].(uint64)), table)
+			if len(children) > 0 {
+				items[i]["children"] = children
+			}
+			node = append(node, items[i])
+		}
+	}
+	return node
 }
