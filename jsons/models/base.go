@@ -51,6 +51,7 @@ type Withs struct {
 	Wheres  []Wheres  `json:"wheres"`
 	Columns []Columns `json:"columns"`
 	Orders  []Orders  `json:"orders"`
+	Type    string    `json:"type"`
 }
 
 type Orders struct {

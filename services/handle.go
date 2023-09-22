@@ -45,7 +45,11 @@ func (s *sHandleService) GetWiths(c *gin.Context, result []map[string]interface{
 
 			withResult := []map[string]interface{}{}
 			ModelService.GetAll(c, v.Name, &withResult, columns, order, map[string]interface{}{v.Foreign: value[v.Key]})
-			value[v.Name] = withResult
+			if v.Type == "hasOne" {
+				value[v.Name] = withResult[0]
+			} else {
+				value[v.Name] = withResult
+			}
 		}
 	}
 

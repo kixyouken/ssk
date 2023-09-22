@@ -205,7 +205,7 @@ func (s *sModelService) Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		}
 
 		limit := table.Action.Limit
-		if limit > int(table.Action.Count) {
+		if limit > int(table.Action.Count) && table.Action.Count > 0 {
 			limit = int(table.Action.Count)
 		}
 		urlLimit, _ := strconv.Atoi(c.Query("limit"))

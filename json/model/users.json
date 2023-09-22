@@ -7,31 +7,34 @@
                 "name": "master_university",
                 "foreign": "id",
                 "key": "master_university_id",
-                "join": "left",
+                "join": "inner",
                 "columns": [
                     {
                         "label": "大学名称",
                         "field": "name"
                     }
                 ]
-            },
-            {
-                "name": "master_job",
-                "foreign": "id",
-                "key": "master_job_id",
-                "join": "left",
-                "columns": [
-                    {
-                        "label": "事务名称",
-                        "field": "name"
-                    }
-                ]
             }
         ],
-        "deleted": {
-            "field": "deleted_by",
-            "value": "1"
-        }
+        "withs": [
+            {
+                "name": "master_university",
+                "foreign": "id",
+                "key": "master_university_id",
+                "join": "inner",
+                "columns": [
+                    {
+                        "label": "学校ID",
+                        "field": "id"
+                    },
+                    {
+                        "label": "学校名称",
+                        "field": "name"
+                    }
+                ],
+                "type": "hasOne"
+            }
+        ]
     },
     "columns": [
         {
@@ -49,16 +52,16 @@
         {
             "label": "生日",
             "field": "birthday",
-            "format": "Y年m月d日"
+            "format": "Y年m月d"
         },
         {
-            "label": "大学ID",
+            "label": "学校ID",
             "field": "master_university_id"
         },
         {
             "label": "状态",
             "field": "status",
-            "attrs": [
+            "attr": [
                 {
                     "in": "0",
                     "out": "未入力"
@@ -104,11 +107,6 @@
                     "out": "メールエラー"
                 }
             ]
-        },
-        {
-            "label": "创建时间",
-            "field": "created_at",
-            "format": "Y-m-d H:i"
         }
     ]
 }
